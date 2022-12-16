@@ -25,6 +25,8 @@ const userSchema = new mongoose.Schema({
 })
 
 // Hash the user's password before saving it to the database
+
+// Hashear la contraseña del usuaruio antes de guardarla en la base de datos
 userSchema.pre("save", async function (next) {
   try {
     if (!this.isModified("password")) {
@@ -41,6 +43,8 @@ userSchema.pre("save", async function (next) {
 })
 
 // Compare the provided password with the hashed password in the database
+
+// Comparar la contraseña provista con la contraseña hasheada en la base de datos
 userSchema.methods.comparePassword = async function (candidatePassword) {
   try {
     const isMatch = await bcrypt.compare(candidatePassword, this.password)
@@ -51,6 +55,8 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 }
 
 // Convert the user object to a JSON object with only the fields we want to expose
+
+// Convertir el objeto del usuario a un objeto JSON con solo los campos que queremos exponer
 userSchema.methods.toAuthJSON = function () {
   return {
     id: this._id,

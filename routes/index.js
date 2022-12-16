@@ -6,6 +6,8 @@ const Series = require("../models/series")
 const Episode = require("../models/episodes")
 
 // Login endpoint
+
+// Enpoint de login
 router.post("/users/login", async (req, res) => {
   try {
     const email = req.body.email
@@ -13,6 +15,9 @@ router.post("/users/login", async (req, res) => {
 
     // Validate the email and password, and return a JSON response with
     // the user's information if the login is successful
+
+    // Validar el email y la contraseña, y retornar una respuesta JSON con
+    // la información del usuario si el login fue existoso
     const user = await User.findOne({ email: email })
     if (!user) {
       return res.status(404).json({ error: "User not found" })
@@ -30,6 +35,8 @@ router.post("/users/login", async (req, res) => {
 })
 
 // Register endpoint
+
+// Enpoint de registro
 router.post("/users/register", async (req, res) => {
   try {
     const email = req.body.email
@@ -37,6 +44,9 @@ router.post("/users/register", async (req, res) => {
 
     // Create a new user in the database and return a JSON response with
     // the user's information
+
+    // Crear un nuevo usuario en la base de datos y retornar una respuesta JSON con
+    // la información del usuario
     const user = new User({
       email: email,
       password: password,
@@ -51,6 +61,8 @@ router.post("/users/register", async (req, res) => {
 })
 
 // Add favorite endpoint
+
+// Enpoint para agregar a favoritos
 router.post("/users/:user_id/favorite", async (req, res) => {
   try {
     const userId = req.params.user_id
@@ -58,6 +70,9 @@ router.post("/users/:user_id/favorite", async (req, res) => {
 
     // Add the specified series to the user's favorites list and return
     // a JSON response indicating success
+
+    // Agregar la serie especificada a la lista de favoritos del usuario y retornar
+    // una respuesta JSON indicando su éxito
     const user = await User.findById(userId)
     if (!user) {
       return res.status(404).json({ error: "User not found" })
@@ -73,9 +88,13 @@ router.post("/users/:user_id/favorite", async (req, res) => {
 })
 
 // Get all series endpoint
+
+// Enpoint para obtener todas las series
 router.get("/series", async (req, res) => {
   try {
     // Return a list of all series with their ID, title, description, and cover image URL
+
+    //Retornar una lista de todas las series con su ID, titulo, descripción, y URL de la imagen de portada
     const series = await Series.find({})
     return res.json({ series: series.map((series) => series.toJSON()) })
   } catch (err) {
@@ -84,12 +103,17 @@ router.get("/series", async (req, res) => {
 })
 
 // Get series by ID endpoint
+
+// Enpoint para obetener una serie mediante su ID
 router.get("/series/:series_id", async (req, res) => {
   try {
     const seriesId = req.params.series_id
 
     // Return the series with the specified ID, including its ID, title, description,
     // cover image URL, and a list of episodes
+
+    // Retornar la serie con el ID especificado, incluyendo su ID, titulo, descripción,
+    // URL de la imagen de portada, y una lista de episodios
     const series = await Series.findById(seriesId)
     if (!series) {
       return res.status(404).json({ error: "Series not found" })
@@ -102,14 +126,20 @@ router.get("/series/:series_id", async (req, res) => {
 })
 
 // Delete series by ID endpoint
+
+// Enpoint para eliminar una serie mediante su ID
 router.delete("/series/:id", async (req, res) => {
   const { id } = req.params
 
   try {
     // Find and delete series
+
+    // Encontrar y eliminar serie
     const series = await Series.findByIdAndDelete(id)
 
     // Check if series exists
+
+    // Chequear si la serie existe
     if (!series) {
       return res.status(404).json({ message: "Series not found" })
     }
@@ -121,12 +151,16 @@ router.delete("/series/:id", async (req, res) => {
 })
 
 // Update series by ID endpoint
+
+// Enpoint para actualizar una serie mediante su ID
 router.put("/series/:id", async (req, res) => {
   const { id } = req.params
   const { title, description, imageUrl, category } = req.body
 
   try {
     // Find and update series
+
+    // Encontrar y actualizar serie
     const series = await Series.findByIdAndUpdate(
       id,
       { title, description, imageUrl, category },
@@ -134,6 +168,8 @@ router.put("/series/:id", async (req, res) => {
     )
 
     // Check if series exists
+
+    // Chequear si la serie existe
     if (!series) {
       return res.status(404).json({ message: "Series not found" })
     }
@@ -145,11 +181,15 @@ router.put("/series/:id", async (req, res) => {
 })
 
 // Add series endpoint
+
+// Enpoint para agregar una serie
 router.post("/series", async (req, res) => {
   const { title, description, imageUrl, category } = req.body
 
   try {
     // Create new series
+
+    // Crear nueva serie
     const newSeries = new Series({
       title,
       description,
@@ -158,6 +198,8 @@ router.post("/series", async (req, res) => {
     })
 
     // Save series to database
+
+    // Guardar serie en la base de datos
     const savedSeries = await newSeries.save()
     res.json(savedSeries)
   } catch (err) {
@@ -166,6 +208,8 @@ router.post("/series", async (req, res) => {
 })
 
 // GET endpoint to obtain the list of episodes for a series
+
+// Endpoint GET para obtener la lista de episodios de una serie
 router.get("/series/:seriesId/episodes", (req, res) => {
   const seriesId = req.params.seriesId
   Episode.find({ seriesId: seriesId }, (err, episodes) => {
@@ -175,6 +219,8 @@ router.get("/series/:seriesId/episodes", (req, res) => {
 })
 
 // POST endpoint to create an episode for a series
+
+// Endpoint POST para crear un episodio para una serie
 router.post("/series/:seriesId/episodes", (req, res) => {
   const seriesId = req.params.seriesId
   const episode = new Episode({ seriesId: seriesId, ...req.body })
@@ -185,6 +231,8 @@ router.post("/series/:seriesId/episodes", (req, res) => {
 })
 
 // DELETE endpoint to delete an episode
+
+// Endpoint DELETE para eliminar un episodio
 router.delete("/series/:seriesId/episodes/:episodeId", (req, res) => {
   const seriesId = req.params.seriesId
   const episodeId = req.params.episodeId
@@ -195,6 +243,8 @@ router.delete("/series/:seriesId/episodes/:episodeId", (req, res) => {
 })
 
 // PUT endpoint to update an episode
+
+// Endpoint PUT para actualizar un episodio
 router.put("/series/:seriesId/episodes/:episodeId", (req, res) => {
   const seriesId = req.params.seriesId
   const episodeId = req.params.episodeId

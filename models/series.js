@@ -1,5 +1,8 @@
 const mongoose = require("mongoose")
 
+// Schema for series 
+
+// Esquema para las series
 const SeriesSchema = new mongoose.Schema({
   title: {
     type: String,

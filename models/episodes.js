@@ -1,5 +1,8 @@
 const mongoose = require("mongoose")
 
+// Schema for episodes 
+
+// Esquema para los episodios
 const EpisodeSchema = new mongoose.Schema({
   title: {
     type: String,
